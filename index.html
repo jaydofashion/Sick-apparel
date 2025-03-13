@@ -99,3 +99,102 @@
     const emailInput = document.getElementById('emailInput');
     const submitEmailBtn = document.getElementById('submitEmailBtn');
     const resultDiv = document.getElementById('result');
+
+    let spinning = false;
+
+    const prizes = [
+        { name: 'Free Sticker', weight: 50 },
+        { name: 'BOGO 25% Off', weight: 10 },
+        { name: '$5 Off', weight: 10 },
+        { name: '8.8% Off', weight: 10 },
+        { name: 'Free Shipping', weight: 10 },
+    ];
+
+    const segments = prizes.map(prize => prize.name);
+
+    const colors = ['#E74C3C', '#3498DB', '#F39C12', '#9B59B6', '#2ECC71'];
+
+    let segmentsCreated = false; // Flag to track if segments are created
+
+    function createSegments() {
+        if (segmentsCreated) return; // Prevent creating segments multiple times
+        const numSegments = segments.length;
+        const segmentAngle = 360 / numSegments;
+        let rotation = 0;
+
+        for (let i = 0; i < numSegments; i++) {
+            const segment = document.createElement('div');
+            segment.className = 'segment';
+            segment.style.backgroundColor = colors[i % colors.length];
+            segment.style.transform = `rotate(${rotation}deg)`;
+            segment.style.webkitTransform = `rotate(${rotation}deg)`; // For Safari
+            segment.innerHTML = segments[i];
+            wheel.appendChild(segment);
+            rotation += segmentAngle;
+        }
+        segmentsCreated = true;
+    }
+
+    function spinWheel() {
+        if (spinning) return;
+        spinning = true;
+
+        const email = emailInput.value;
+        if (!validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            spinning = false;
+            return;
+        }
+
+        // Disable email input and submit button after spinning
+        emailInput.disabled = true;
+        submitEmailBtn.disabled = true;
+
+        // Assign weights to each prize
+        const weightedPrizes = prizes.reduce((arr, prize, index) => {
+            for (let i = 0; i < prize.weight; i++) {
+                arr.push(index);
+            }
+            return arr;
+        }, []);
+
+        // Randomly select a prize
+        const winningIndex = weightedPrizes[Math.floor(Math.random() * weightedPrizes.length)];
+        const winningSegment = segments[winningIndex];
+
+        // Calculate rotation
+        const rand = Math.floor(Math.random() * 360);
+        const rotation = 360 * 5 + rand + (360 - (winningIndex * (360 / segments.length) + (360 / segments.length) / 2));
+
+        wheel.style.transform = `rotate(${rotation}deg)`;
+
+        wheel.addEventListener('transitionend', () => {
+            resultDiv.innerHTML = `Congratulations! You won: ${winningSegment}`;
+            spinning = false;
+            // Optionally, send data to Google Sheets here
+        }, { once: true });
+    }
+
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    submitEmailBtn.addEventListener('click', function() {
+        const email = emailInput.value;
+        if (validateEmail(email)) {
+            spinBtn.disabled = false;
+            submitEmailBtn.style.display = 'none'; // Hide the submit button
+            emailInput.style.display = 'none'; // Hide the email input
+            createSegments(); // Create the segments when the email is submitted
+            alert('Email submitted! You can now spin the wheel.');
+        } else {
+            alert('Please enter a valid email address.');
+        }
+    });
+
+    spinBtn.addEventListener('click', spinWheel);
+</script>
+
+</body>
+</html>
