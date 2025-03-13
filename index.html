@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel</title>
+    <style>
+        /* Wheel styles */
+        #wheelContainer {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+        }
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            transition: transform 5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            text-align: center;
+            line-height: 150px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        #spinBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 10;
+        }
+        /* Email input styles */
+        #emailInput {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            z-index: 11;
+        }
+        #emailInput:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        #submitEmailBtn {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 12;
+        }
+        #result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="wheelContainer">
+    <div id="wheel">
+        <!-- Segments will be added here by JavaScript -->
+    </div>
+    <input type="email" id="emailInput" placeholder="Enter your email">
+    <button id="submitEmailBtn">Submit Email</button>
+    <button id="spinBtn" disabled>Spin</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+    const wheel = document.getElementById('wheel');
+    const spinBtn = document.getElementById('spinBtn');
+    const emailInput = document.getElementById('emailInput');
+    const submitEmailBtn = document.getElementById('submitEmailBtn');
+    const resultDiv = document.getElementById('result');
